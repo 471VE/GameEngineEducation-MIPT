@@ -14,20 +14,6 @@
 #include "EntitySystem/EntitySystem.h"
 #include "../ScriptSystem/ScriptSystem.h"
 
-#include <format>
-#include <sstream>
-#include <iostream>
-
-#define Log(fmt, ...) \
-{ \
-	std::stringstream ss; \
-	ss << std::format("{}({},{}): ", __FILE__, __LINE__, 0); \
-	ss << std::format(fmt, __VA_ARGS__); \
-	ss << '\n'; \
-	std::cout << ss.str() << std::endl; \
-	OutputDebugStringA(ss.str().c_str()); \
-}
-
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -50,12 +36,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg = { 0 };
 
-    AllocConsole();
-    FILE* fDummy;
-    freopen_s(&fDummy, "CONIN$", "r", stdin);
-    freopen_s(&fDummy, "CONOUT$", "w", stderr);
-    freopen_s(&fDummy, "CONOUT$", "w", stdout);
-
     timer.Start();
     timer.Reset();
 
@@ -76,8 +56,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             timer.Tick();
 
             renderThread->OnEndFrame();
-            auto pos = inputHandler->GetMouseCoordinates();
-            //Log("x = {}, y = {}", pos.x, pos.y);
         }
     }
 

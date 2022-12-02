@@ -14,6 +14,7 @@
 void initialize_script_state(flecs::world& ecs, std::shared_ptr<CScriptProxy> scriptProxy) {
 
   sol::state& state = scriptProxy->GetState();
+  state.open_libraries(sol::lib::math);
   state.new_usertype<Position>("Position",
     "x", &Position::x,
     "y", &Position::y,
@@ -27,11 +28,15 @@ void initialize_script_state(flecs::world& ecs, std::shared_ptr<CScriptProxy> sc
     "y", &BouncePlane::y,
     "z", &BouncePlane::z,
     "w", &BouncePlane::w);
+  state.new_usertype<CursorPosition>("CursorPosition",
+    "x", &CursorPosition::x,
+    "y", &CursorPosition::y);
 
   state.new_usertype<std::bitset<eIC_Max>>("Bitset",
-     "test", &std::bitset<eIC_Max>::test);
+    "test", &std::bitset<eIC_Max>::test);
   state.new_usertype<InputHandler>("InputHandler",
-     "getInputState", &InputHandler::GetInputState);
+    "getInputState", &InputHandler::GetInputState,
+    "getMouseCoordinates", &InputHandler::GetMouseCoordinates);
   state.new_usertype<ReloadTimer>("ReloadTimer",
     "numberOfBulletsToAdd", &ReloadTimer::numberOfBulletsToAdd,
     "time", &ReloadTimer::time,
