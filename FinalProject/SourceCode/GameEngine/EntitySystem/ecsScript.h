@@ -12,5 +12,4 @@ struct Scripts {
     std::vector<std::string> names;
 };
 
-void initialize_script_state(flecs::world& ecs, std::shared_ptr<CScriptProxy> scriptProxy);
 void register_ecs_script_systems(flecs::world& ecs);

@@ -10,16 +10,7 @@ InputHandler::InputHandler()
 	std::replace(m_strMapFilePath.begin(), m_strMapFilePath.end(), '\\', '/');
 
 	MapAllSymbols();
-
-	MapCommandSymbol("GoLeft", eIC_GoLeft, "a");
-	MapCommandSymbol("GoRight", eIC_GoRight, "d");
-	MapCommandSymbol("GoForward", eIC_GoForward, "w");
-	MapCommandSymbol("GoBackward", eIC_GoBackward, "s");
-	MapCommandSymbol("Jump", eIC_Jump, "space");
-	MapCommandSymbol("Shoot", eIC_Shoot, "LMB");
-
 	LoadConfiguration();
-
 	Remap();
 
 	m_hwnd = GetActiveWindow();
@@ -43,12 +34,6 @@ void InputHandler::MapInputEvent(std::size_t nSymbol, size_t nCommand)
 	m_inputEventMap[nSymbol] = nCommand;
 }
 
-void InputHandler::MapCommandSymbol(std::string strCommand, size_t nCommand, std::string strDefaultSymbol)
-{
-	m_commandMap[strCommand] = nCommand;
-	m_commandSymbolMap[strCommand] = strDefaultSymbol;
-}
-
 void InputHandler::Remap()
 {
 	for (auto& it : m_commandSymbolMap)
@@ -57,21 +42,21 @@ void InputHandler::Remap()
 	}
 }
 
-// We used int as return type just for demonstration. It should be done another way
+
 void InputHandler::Update()
 {
 	for (auto& it : m_inputEventMap)
 	{
-		m_InputState.set(it.second, IsKeyDown(it.first));
+		m_InputState[it.second] = IsKeyDown(it.first);
 	}
 }
 
-const std::bitset<eIC_Max>& InputHandler::GetInputState() const
+const bool InputHandler::IsActionKeyPressed(size_t action_key) const
 {
-	return m_InputState;
+	return bool(m_InputState[action_key]);
 }
 
-const CursorPosition InputHandler::GetMouseCoordinates() {
+const CursorPosition& InputHandler::GetMouseCoordinates() {
 	GetCursorPos((LPPOINT)(&m_cursorPosition));
 	ScreenToClient(m_hwnd, (LPPOINT)(&m_cursorPosition));
 	return m_cursorPosition;
@@ -83,12 +68,22 @@ void InputHandler::LoadConfiguration()
 	INIReader reader(m_strMapFilePath.c_str());
 	assert(reader.ParseError() >= 0);
 	auto fields = reader.GetFields("Keyboard");
+	m_commandVector.clear();
+	m_InputState.resize(fields.size());
 
+	size_t nCommand = 0;
 	for (auto& field : fields)
 	{
 		std::string strCommand = field;
 		std::string strSymbol = reader.Get("Keyboard", field, "");
 
 		m_commandSymbolMap[strCommand] = strSymbol;
+		m_commandMap[strCommand] = nCommand;
+		m_commandVector.push_back(field);
+		nCommand++;
 	}
+}
+
+const std::vector<std::string>& InputHandler::GetFields() const {
+	return m_commandVector;
 }

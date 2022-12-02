@@ -11,23 +11,22 @@ entity     = world:getEntity(entity_id)
 velocity   = entity:getVelocity()
 position   = entity:getPosition()
 plane      = entity:getBouncePlane()
-inputState = inputHandler:getInputState()
 cursor     = inputHandler:getMouseCoordinates()
 
 gun         = entity:getGun()
 reloadTimer = entity:getReloadTimer()
 
 -- Controlling the gun 
-if inputState:test(eIC_GoLeft) then
+if inputHandler:isActionKeyPressed(GoLeft) then
 	deltaVelX = deltaVelX - speed
 end
-if inputState:test(eIC_GoRight) then
+if inputHandler:isActionKeyPressed(GoRight) then
 	deltaVelX = deltaVelX + speed
 end
-if inputState:test(eIC_GoBackward) then
+if inputHandler:isActionKeyPressed(GoBackward) then
 	deltaVelZ = deltaVelZ - speed
 end
-if inputState:test(eIC_GoForward) then
+if inputHandler:isActionKeyPressed(GoForward) then
 	deltaVelZ = deltaVelZ + speed
 end
 velNormSquared = deltaVelX * deltaVelX + deltaVelZ * deltaVelZ
@@ -35,7 +34,7 @@ if velNormSquared > speed * speed then
     deltaVelX = deltaVelX * 0.707
     deltaVelZ = deltaVelZ * 0.707
 end
-if inputState:test(eIC_Jump) then
+if inputHandler:isActionKeyPressed(Jump) then
 	if plane.x * position.x + plane.y * position.y + plane.z * position.z < plane.w + epsilon then
 		velocity.y = jumpSpeed
 	end
@@ -45,7 +44,7 @@ velocity.x = velocity.x + deltaVelX * dt
 velocity.z = velocity.z + deltaVelZ * dt
 
 -- Firing from the gun
-if inputState:test(eIC_Shoot) and gun.numberOfBullets > 0 then
+if inputHandler:isActionKeyPressed(Shoot) and gun.numberOfBullets > 0 then
 	if not gun.shootKeyPressed then
 		bullet = world:createEntity()
 		bullet:setOwner(gun.bullet)
@@ -116,7 +115,12 @@ if inputState:test(eIC_Shoot) and gun.numberOfBullets > 0 then
 		deltaX = deltaX / length
 		deltaZ = deltaZ / length
 
-		bullet:setVelocity(velocity.x + deltaX * 30.0, velocity.y, velocity.z + deltaZ * 30.0)
+		if not inputHandler:isActionKeyPressed(Inverted) then
+			bullet:setVelocity(velocity.x + deltaX * 30.0, velocity.y, velocity.z + deltaZ * 30.0)
+		else
+			bullet:setVelocity(velocity.x - deltaX * 30.0, velocity.y, velocity.z - deltaZ * 30.0)
+		end
+
 		bullet:setPosition(position.x, position.y, position.z)
 		bullet:addIcosahedronMesh()
 		gun.shootKeyPressed = true
