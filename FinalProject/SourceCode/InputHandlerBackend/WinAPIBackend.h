@@ -1,31 +1,22 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
-#include <bitset>
+#include "Common.h"
+#include "IInputHandlerBackend.h"
 
+#include <memory>
+#include <unordered_map>
 #include <windows.h>
 
-#include "INIReader.h"
-
-struct CursorPosition {
-	long x, y;
-};
-
-class InputHandler
-{
+class INPUTHANDLERBACKEND_API WinAPIBackend : public IInputHandlerBackend {
 public:
-	InputHandler();
-
-	void Update();
-
-	const bool IsActionKeyPressed(size_t action_key) const;
-	const CursorPosition& GetMouseCoordinates();
-	const std::vector<std::string>& GetFields() const;
+	virtual void Init() override;
+	virtual void Update() override;
+	virtual const bool IsActionKeyPressed(size_t action_key) const override;
+	virtual const CursorPosition& GetMouseCoordinates() override;
+	virtual const std::vector<std::string>& GetFields() const override;
 
 private:
 	void LoadConfiguration();
-
 	bool IsKeyDown(size_t vk_key);
 
 	void MapSymbol(std::string strSymbol, size_t nSymbol);
@@ -34,7 +25,6 @@ private:
 	void Remap();
 
 	std::string m_strMapFilePath;
-
 	typedef std::unordered_map<std::string, size_t> TCommandMap;
 	typedef std::unordered_map<std::string, size_t> TSymbolMap;
 	typedef std::unordered_map<size_t, size_t> TInputEventMap;
@@ -51,4 +41,3 @@ private:
 
 	std::vector<std::string> m_commandVector;
 };
-

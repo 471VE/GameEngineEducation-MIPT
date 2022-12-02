@@ -1,10 +1,11 @@
-#include "InputHandler.h"
+#include "WinAPIBackend.h"
 
-#include <windows.h>
+#include "INIReader.h"
+
 #include <algorithm>
 #include <cassert>
 
-InputHandler::InputHandler()
+void WinAPIBackend::Init()
 {
 	m_strMapFilePath = "../../../Assets/Configs/actionmap.ini";
 	std::replace(m_strMapFilePath.begin(), m_strMapFilePath.end(), '\\', '/');
@@ -16,7 +17,7 @@ InputHandler::InputHandler()
 	m_hwnd = GetActiveWindow();
 }
 
-bool InputHandler::IsKeyDown(size_t vk_key)
+bool WinAPIBackend::IsKeyDown(size_t vk_key)
 {
 	if (GetAsyncKeyState(vk_key) & 0x8000)
 		return true;
@@ -24,17 +25,17 @@ bool InputHandler::IsKeyDown(size_t vk_key)
 	return false;
 }
 
-void InputHandler::MapSymbol(std::string strSymbol, size_t nSymbol)
+void WinAPIBackend::MapSymbol(std::string strSymbol, size_t nSymbol)
 {
 	m_symbolMap[strSymbol] = nSymbol;
 }
 
-void InputHandler::MapInputEvent(std::size_t nSymbol, size_t nCommand)
+void WinAPIBackend::MapInputEvent(std::size_t nSymbol, size_t nCommand)
 {
 	m_inputEventMap[nSymbol] = nCommand;
 }
 
-void InputHandler::Remap()
+void WinAPIBackend::Remap()
 {
 	for (auto& it : m_commandSymbolMap)
 	{
@@ -43,7 +44,7 @@ void InputHandler::Remap()
 }
 
 
-void InputHandler::Update()
+void WinAPIBackend::Update()
 {
 	for (auto& it : m_inputEventMap)
 	{
@@ -51,19 +52,19 @@ void InputHandler::Update()
 	}
 }
 
-const bool InputHandler::IsActionKeyPressed(size_t action_key) const
+const bool WinAPIBackend::IsActionKeyPressed(size_t action_key) const
 {
 	return bool(m_InputState[action_key]);
 }
 
-const CursorPosition& InputHandler::GetMouseCoordinates() {
+const CursorPosition& WinAPIBackend::GetMouseCoordinates() {
 	GetCursorPos((LPPOINT)(&m_cursorPosition));
 	ScreenToClient(m_hwnd, (LPPOINT)(&m_cursorPosition));
 	return m_cursorPosition;
 }
 
 
-void InputHandler::LoadConfiguration()
+void WinAPIBackend::LoadConfiguration()
 {
 	INIReader reader(m_strMapFilePath.c_str());
 	assert(reader.ParseError() >= 0);
@@ -84,6 +85,6 @@ void InputHandler::LoadConfiguration()
 	}
 }
 
-const std::vector<std::string>& InputHandler::GetFields() const {
+const std::vector<std::string>& WinAPIBackend::GetFields() const {
 	return m_commandVector;
 }

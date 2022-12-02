@@ -1,8 +1,6 @@
-#include "InputHandler.h"
+#include "WinAPIBackend.h"
 
-#include <windows.h>
-
-void InputHandler::MapAllSymbols() {
+void WinAPIBackend::MapAllSymbols() {
 	MapSymbol("LMB", VK_LBUTTON);
 	MapSymbol("RMB", VK_RBUTTON);
 	MapSymbol("MMB", VK_MBUTTON);

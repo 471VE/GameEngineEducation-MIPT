@@ -4,7 +4,7 @@
 #include "ecsScript.h"
 #include "ecsSystems.h"
 
-#include "../GameEngine/InputHandler.h"
+#include "../InputHandler/InputHandler.h"
 
 #include "../ScriptSystem/ScriptProxy.h"
 #include "../ScriptSystem/ScriptSystem.h"

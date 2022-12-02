@@ -44,7 +44,7 @@ velocity.x = velocity.x + deltaVelX * dt
 velocity.z = velocity.z + deltaVelZ * dt
 
 -- Firing from the gun
-if inputHandler:isActionKeyPressed(Shoot) and gun.numberOfBullets > 0 then
+if inputHandler:isActionKeyPressed(Fire) and gun.numberOfBullets > 0 then
 	if not gun.shootKeyPressed then
 		bullet = world:createEntity()
 		bullet:setOwner(gun.bullet)
@@ -115,11 +115,11 @@ if inputHandler:isActionKeyPressed(Shoot) and gun.numberOfBullets > 0 then
 		deltaX = deltaX / length
 		deltaZ = deltaZ / length
 
-		if not inputHandler:isActionKeyPressed(Inverted) then
+		--if not inputHandler:isActionKeyPressed(Inverted) then
 			bullet:setVelocity(velocity.x + deltaX * 30.0, velocity.y, velocity.z + deltaZ * 30.0)
-		else
-			bullet:setVelocity(velocity.x - deltaX * 30.0, velocity.y, velocity.z - deltaZ * 30.0)
-		end
+		--else
+		--	bullet:setVelocity(velocity.x - deltaX * 30.0, velocity.y, velocity.z - deltaZ * 30.0)
+		--end
 
 		bullet:setPosition(position.x, position.y, position.z)
 		bullet:addIcosahedronMesh()
